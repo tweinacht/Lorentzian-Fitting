@@ -1,0 +1,33 @@
+from matplotlib import pyplot as plt
+import numpy as np
+from scipy.optimize import curve_fit
+
+# Define the lorentzian function
+def lorentzian(x, amplitude, x0, gamma):
+    return amplitude * (gamma**2 / ((x - x0)**2 + gamma**2))
+
+# Generate some data to fit to
+xdata = np.linspace(-10, 10, num=50)
+y = lorentzian(xdata, 2, 0, 1) + np.random.normal(0, 0.1, 50)
+
+# Perform the curve fit
+popt, pcov = curve_fit(lorentzian, xdata, y)
+
+# Print the results
+print("Amplitude: ", popt[0])
+print("X0: ", popt[1])
+print("Gamma: ", popt[2])
+
+# Generate fit curve to graph
+y_fitted = popt[0] * ((popt[2])**2 / ((xdata - popt[1])**2 + (popt[2])**2))
+#y_fitted = popt[0] * xdata
+# Plot the results
+# plt.plot(xdata, y)
+ax = plt.axes()
+ax.scatter(xdata, y, label='Raw data')
+ax.plot(xdata, y_fitted, 'k', label='Fitted curve')
+ax.set_title('Using curve_fit() to fit a Lorentzian function')
+ax.set_ylabel('y-Values')
+#ax.set_ylim(10, 10)
+ax.set_xlabel('x-Values')
+ax.legend() 
